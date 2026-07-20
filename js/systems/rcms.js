@@ -13,9 +13,16 @@
   const { RCMS_CATEGORY_MAP, UNCLASSIFIED, classifyBy, emptySums } = window.CategoryMap;
 
   const RCMS_ORG_MARKERS = ["한국전자통신연구원", "ETRI"];
+  // RCMS 파일마다 참여기관 행 앞에 붙는 기호가 조금씩 다르게 나온 사례가 있어
+  // (실사용 파일에서 "●"를 확인) 흔한 불릿 문자를 모두 인정한다.
+  const RCMS_ORG_BULLETS = ["●", "○", "•", "◎"];
 
   function classifyRCMS(item) {
     return classifyBy(RCMS_CATEGORY_MAP, item, false);
+  }
+
+  function hasOrgBullet(text) {
+    return RCMS_ORG_BULLETS.some((b) => text.includes(b));
   }
 
   // 원본 detectFileType의 RCMS 판별 조건 그대로: "협약한도"/"이체완료금액" 헤더가 있으면 RCMS
@@ -27,7 +34,7 @@
     let blockStart = 0;
     for (let r = searchStartRow; r <= grid.length; r++) {
       const a = cellText(grid, r, 1);
-      if (a.includes("○") && RCMS_ORG_MARKERS.some((m) => a.includes(m))) {
+      if (hasOrgBullet(a) && RCMS_ORG_MARKERS.some((m) => a.includes(m))) {
         blockStart = r;
         break;
       }
@@ -36,7 +43,7 @@
     let blockEnd = grid.length;
     for (let r = blockStart + 1; r <= grid.length; r++) {
       const a = cellText(grid, r, 1);
-      if (a.includes("○")) { blockEnd = r - 1; break; }
+      if (hasOrgBullet(a)) { blockEnd = r - 1; break; }
     }
     return { ok: true, blockStart, blockEnd };
   }
