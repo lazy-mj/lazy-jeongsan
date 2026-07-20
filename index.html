@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
 <title>예산 검증 도구 (PMS ↔ 이지바로/RCMS)</title>
+<!-- 공통 디자인 시스템(lazy-office). 아래 css/style.css가 뒤에 로드되므로 겹치는 규칙은 항상 css/style.css가 이깁니다 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lazy-mj/lazy-office@main/shared/style.css">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
