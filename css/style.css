@@ -197,6 +197,9 @@ body {
   font-size: 16px;
   margin: 0 0 16px;
   color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ===== 드롭존 (단일, 여러 파일 한번에) ===== */
@@ -592,24 +595,7 @@ table.result td.diff-cell.mismatch {
 
 footer.app-footer {
   margin-top: 40px;
-  text-align: left;
-  font-size: 12px;
-  color: var(--text-muted);
-  border-top: 1px dashed var(--border);
-  padding-top: 14px;
 }
-footer.app-footer .footer-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 10px;
-  font-size: 13px;
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 600;
-}
-footer.app-footer .footer-link .icon-svg{width:15px; height:15px; flex-shrink:0;}
-footer.app-footer .footer-link:hover { text-decoration: underline; }
 
 @media (max-width: 720px) {
   .summary-grid { grid-template-columns: 1fr; }
