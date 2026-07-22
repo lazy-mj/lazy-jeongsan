@@ -167,8 +167,33 @@ function wireDropzone() {
   });
 }
 
+function showGuideModal() {
+  AppCore.dialog.info({
+    title: "사용법",
+    bodyHtml: `
+      <ol>
+        <li><b>파일 업로드</b> : PMS(ETRIware)와 외부시스템(이지바로, RCMS) 예산 엑셀 파일을 한 번에 끌어다 놓으세요. 자동으로 어떤 파일인지 구분합니다.</li>
+        <li><b>여러 과제를 한 번에 검증</b>하고 싶다면 여러 파일을 함께 올리세요. PMS(ETRIware)·외부시스템 파일이 각각 1개씩만 인식되면 바로 진행되고, 여러 개가 인식되면 화면에 나타나는 선택창에서 [짝 추가]로 원하는 조합을 직접 만들 수 있습니다.</li>
+        <li><b>검증 실행</b> 버튼을 누르면 비목별로 이월예산·실행예산·집행실적·잔액을 비교합니다.</li>
+        <li><b>결과 확인</b> : 값이 다른 셀은 노란 배경에 빨간 글씨로 표시됩니다. 분류표에 없는 세목은 "기타(미분류)" 행에 합산됩니다.</li>
+        <li><b>내보내기</b> : [결과 다운로드]로 과제별 시트가 나뉜 엑셀 파일을 다운로드 할 수 있습니다.</li>
+      </ol>
+      <p class="usage-subhead">어디서 다운로드하나요?</p>
+      <ul>
+        <li><b>PMS(ETRIware)</b> : 업무관리 &gt; 예산관리 &gt; 현황관리 &gt; 협약사업예실대비표 &gt; 과제선택 &gt; "관련예산 예산집행현황" 선택 &gt; [엑셀다운] 버튼</li>
+        <li><b>통합이지바로</b> : 집행 &gt; 연구비 사용 현황 &gt; 예산실적대비표 &gt; 우측상단 [인쇄] 버튼 &gt; 좌측상단 [저장] &gt; 파일형식 Microsoft Excel File(*.xlsx)로 저장</li>
+        <li><b>RCMS</b> : 연구개발기관 &gt; 연구비현황 &gt; 연구비사용현황 &gt; 과제선택 &gt; 우측상단 [엑셀다운로드] 버튼 클릭</li>
+      </ul>
+    `
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   wireDropzone();
+  $("#guideBadge").addEventListener("click", showGuideModal);
+  $("#guideBadge").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.target.click(); }
+  });
   $("#runBtn").addEventListener("click", runComparison);
   $("#addPairBtn").addEventListener("click", addPair);
   $("#downloadAllBtn").addEventListener("click", downloadAllExcel);

@@ -105,58 +105,31 @@ body {
   flex-shrink: 0;
 }
 
-/* ===== 사용법 펼쳐보기 ===== */
-.usage-guide {
-  margin-bottom: 20px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--card);
-  overflow: hidden;
-}
-.usage-guide summary {
-  cursor: pointer;
-  padding: 12px 18px;
-  font-weight: 600;
-  color: var(--primary-dark);
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  user-select: none;
-}
-.usage-guide summary::-webkit-details-marker { display: none; }
-.usage-guide summary::before {
-  content: "▶";
-  font-size: 11px;
-  color: var(--primary);
-  transition: transform .15s;
-}
-.usage-guide[open] summary::before { transform: rotate(90deg); }
-.usage-guide .usage-body {
-  padding: 4px 18px 18px;
-  font-size: 13.5px;
-  color: var(--text);
-  border-top: 1px solid var(--border);
-}
-.usage-guide .usage-body ol {
+/* ===== 사용법 모달 안 컨텐츠 (구 아코디언 스타일을 모달용으로 이전) ===== */
+.modal-message ol,
+.modal-message ul {
+  text-align: left;
   margin: 10px 0 0;
   padding-left: 20px;
 }
-.usage-guide .usage-body ul {
-  margin: 8px 0 0;
-  padding-left: 20px;
-}
-.usage-guide .usage-body li { margin-bottom: 8px; }
-.usage-guide .usage-body b { color: var(--primary-dark); }
-.usage-guide .usage-body .usage-subhead {
+.modal-message li { margin-bottom: 8px; }
+.modal-message b { color: var(--primary-dark); }
+.modal-message .usage-subhead {
   margin: 16px 0 0;
   padding-top: 12px;
   border-top: 1px dashed var(--border);
   font-weight: 700;
   color: var(--text);
+  text-align: left;
 }
 
 /* ===== STEP 표시는 공용 shared/style.css의 .stepper(미니멀 라인)를 그대로 사용 ===== */
+
+/* 히어로의 "사용법 보기" 뱃지 - 자물쇠 뱃지(블루)와 구분되도록 폰트색만 퍼플톤으로 */
+.tool-hero .lock-note.guide-badge{color:#8B5CF6; cursor:pointer;}
+.tool-hero .lock-note.guide-badge .icon-svg{color:#8B5CF6;}
+.tool-hero .lock-note.guide-badge:hover{background:rgba(255,255,255,0.55);}
+.tool-hero .lock-note.guide-badge:focus-visible{outline:2px solid #8B5CF6; outline-offset:2px;}
 
 /* ===== 카드는 공용 shared/style.css의 .card / .card-head / .step-badge / .desc를 그대로 사용 ===== */
 
@@ -406,7 +379,7 @@ table.overview td.status-ok { color: var(--success); font-weight: 700; }
 table.overview td.status-bad { color: var(--danger); font-weight: 700; }
 
 /* ===== 버튼은 공용 shared/style.css의 .btn / .btn-outline / .btn-action을 그대로 사용 ===== */
-.btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; justify-content: flex-end; }
 
 /* ===== 에러 카드 ===== */
 .error-card {
@@ -529,45 +502,10 @@ footer.app-footer {
   .strip-stats { width: 100%; justify-content: space-between; }
 }
 
-/* ===== 확인/경고 모달 (native alert 대체) ===== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(16, 24, 40, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 200;
-  opacity: 0;
-  transition: opacity .18s ease;
-  padding: 20px;
-}
-.modal-overlay.show { opacity: 1; }
-.modal-box {
-  background: var(--card);
-  border-radius: 14px;
-  padding: 26px;
-  width: 100%;
-  max-width: 380px;
-  box-shadow: 0 20px 50px rgba(16, 24, 40, 0.25);
-  transform: translateY(10px) scale(.98);
-  transition: transform .18s ease;
-}
-.modal-overlay.show .modal-box { transform: translateY(0) scale(1); }
-.modal-title {
-  font-size: 17px;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-.modal-message {
-  font-size: 13.5px;
-  color: var(--text-muted);
-  line-height: 1.6;
-  margin-bottom: 22px;
-}
-.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
-.modal-actions .btn { padding: 10px 18px; font-size: 13.5px; }
+/* ===== 확인/경고 모달 (native alert 대체) : shared/style.css의 .modal-overlay/.modal-box/
+   .modal-title/.modal-message/.modal-actions를 그대로 사용. 여기서 중복 정의하면
+   shared 쪽 수정(가운데정렬 등)이 이 파일에 덮여써져서 반영이 안 되니 추가하지 말 것. ===== */
+
 
 
 /* ===== 접근성: 스크린리더 전용 텍스트 ===== */
