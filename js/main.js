@@ -43,7 +43,7 @@ function resetResultIfNeeded() {
   $("#resultCard").style.display = "none";
   $("#overviewArea").innerHTML = "";
   $("#resultsContainer").innerHTML = "";
-  showToast("↺ 파일이 바뀌어 이전 결과를 초기화했습니다. 다시 검증을 실행해주세요.");
+  AppCore.toast.show("파일이 바뀌어 이전 결과를 초기화했습니다. 다시 검증을 실행해주세요.");
 }
 
 async function handleFiles(fileList) {
@@ -173,6 +173,6 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#addPairBtn").addEventListener("click", addPair);
   $("#downloadAllBtn").addEventListener("click", downloadAllExcel);
   $("#resetBtn").addEventListener("click", resetAll);
-  setStep(0);
+  AppCore.stepper.set(1);
 });
 

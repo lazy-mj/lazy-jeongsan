@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://api.fontshare.com; font-src 'self' https://cdn.fontshare.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
-<title>예산 검증 도구 (PMS ↔ 이지바로/RCMS)</title>
+<title>예산 검증 도구</title>
+<link rel="icon" type="image/svg+xml" href="/lazy-office/shared/favicon.svg">
 <!-- 공통 디자인 시스템(lazy-office). 아래 css/style.css가 뒤에 로드되므로 겹치는 규칙은 항상 css/style.css가 이깁니다 -->
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,600,700&display=swap">
 <link rel="stylesheet" href="/lazy-office/shared/style.css">
@@ -33,7 +34,7 @@
         <li><b>여러 과제를 한 번에 검증</b>하고 싶다면 여러 파일을 함께 올리세요. PMS(ETRIware)·외부시스템 파일이 각각 1개씩만 인식되면 바로 진행되고, 여러 개가 인식되면 화면에 나타나는 선택창에서 [짝 추가]로 원하는 조합을 직접 만들 수 있습니다.</li>
         <li><b>검증 실행</b> 버튼을 누르면 비목별로 이월예산·실행예산·집행실적·잔액을 비교합니다.</li>
         <li><b>결과 확인</b> : 값이 다른 셀은 노란 배경에 빨간 글씨로 표시됩니다. 분류표에 없는 세목은 "기타(미분류)" 행에 합산됩니다.</li>
-        <li><b>내보내기</b> : [전체 엑셀 다운로드]로 과제별 시트가 나뉜 엑셀 파일을 다운로드 할 수 있습니다.</li>
+        <li><b>내보내기</b> : [결과 다운로드]로 과제별 시트가 나뉜 엑셀 파일을 다운로드 할 수 있습니다.</li>
       </ol>
       <p class="usage-subhead">어디서 다운로드하나요?</p>
       <ul>
@@ -44,16 +45,22 @@
     </div>
   </details>
 
-  <div class="steps">
-    <div class="step active">① 파일 업로드</div>
-    <div class="step">② 검증 실행</div>
-    <div class="step">③ 결과 확인</div>
-  </div>
+  <ol class="stepper" id="stepper">
+    <li class="step" data-step="1"><span class="dot">1</span><span class="label">파일 업로드</span></li>
+    <li class="connector"></li>
+    <li class="step" data-step="2"><span class="dot">2</span><span class="label">검증 실행</span></li>
+    <li class="connector"></li>
+    <li class="step" data-step="3"><span class="dot">3</span><span class="label">결과 확인</span></li>
+  </ol>
 
   <div id="errorArea"></div>
+  <div id="toast-zone" class="toast-zone" aria-live="polite"></div>
 
   <section class="card" id="uploadCard">
-    <h2><svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>PMS·외부시스템(이지바로/RCMS) 예산 파일 업로드</h2>
+    <div class="card-head">
+      <h2><span class="step-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></span>예산 파일 업로드</h2>
+      <p class="desc">PMS(ETRIware)와 외부시스템(이지바로/RCMS) 예산 엑셀 파일을 업로드하고 검증을 실행합니다.</p>
+    </div>
     <div class="dropzone" id="dropzone">
       <div class="dz-icon"><svg class="icon-svg" width="26" height="26" viewBox="0 0 24 24"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg></div>
       <div class="dz-label">예산 엑셀 파일들을 여기로 끌어다 놓거나 클릭해서 업로드하세요</div>
@@ -79,16 +86,19 @@
     </div>
     <div class="pair-list" id="pairList"></div>
     <div class="btn-row">
-      <button class="btn btn-primary" id="runBtn" disabled><svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>검증 실행</button>
+      <button class="btn-action" id="runBtn" disabled><span class="shine"></span><span class="btn-label">검증 실행</span></button>
     </div>
   </section>
 
   <section class="card" id="resultCard" style="display:none;">
-    <h2>검증 결과</h2>
+    <div class="card-head">
+      <h2><span class="step-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>검증 결과</h2>
+      <p class="desc">비목별 이월예산·실행예산·집행실적·잔액을 비교한 결과입니다.</p>
+    </div>
     <div id="overviewArea"></div>
     <div id="resultsContainer"></div>
     <div class="btn-row">
-      <button class="btn btn-outline" id="downloadAllBtn"><svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> 전체 엑셀 다운로드</button>
+      <button class="btn btn-outline" id="downloadAllBtn"><svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> 결과 다운로드</button>
       <button class="btn btn-outline" id="resetBtn"><svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> 처음으로 돌아가기</button>
     </div>
   </section>
@@ -107,6 +117,7 @@
 
   <!-- 로딩 순서가 중요합니다: 의존관계 순서대로 나열 -->
   <!-- ⚠️ xlsx.full.min.js는 기존 파일을 그대로 이 경로에 복사해서 사용하세요 (내용 변경 없음) -->
+  <script src="/lazy-office/shared/app-core.js"></script>
   <script src="js/vendor/xlsx.full.min.js"></script>
   <script src="js/config/category-map.js"></script>
   <script src="js/core/grid-utils.js"></script>

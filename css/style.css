@@ -156,51 +156,9 @@ body {
   color: var(--text);
 }
 
-/* ===== STEP 표시 ===== */
-.steps {
-  display: flex;
-  gap: 8px;
-  margin: 24px 0;
-}
-.step {
-  flex: 1;
-  padding: 10px 14px;
-  border-radius: 8px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-align: center;
-}
-.step.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-.step.done {
-  background: var(--secondary);
-  color: var(--primary);
-  border-color: var(--primary);
-}
+/* ===== STEP 표시는 공용 shared/style.css의 .stepper(미니멀 라인)를 그대로 사용 ===== */
 
-/* ===== 카드 ===== */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-}
-.card h2 {
-  font-size: 16px;
-  margin: 0 0 16px;
-  color: var(--primary-dark);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+/* ===== 카드는 공용 shared/style.css의 .card / .card-head / .step-badge / .desc를 그대로 사용 ===== */
 
 /* ===== 드롭존 (단일, 여러 파일 한번에) ===== */
 .dropzone {
@@ -356,38 +314,66 @@ body {
 }
 .pair-chip .pc-remove:hover { color: var(--danger); }
 
-/* 다중 결과 블록 - 구분선 대신 각각 독립된 카드로 확실히 구분 */
-.result-block {
+/* 다중 결과 블록 - "리포트 헤더 스트립": 헤더 자체를 상태색으로 물들인 한 줄 바 + 표가 하나의 패널로 이어짐 */
+.strip-card {
   margin-top: 20px;
-  padding: 20px 22px;
-  background: var(--bg);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--card);
   border: 1px solid var(--border);
-  border-left: 5px solid var(--primary);
-  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(20,30,60,0.07), 0 2px 8px rgba(20,30,60,0.05);
 }
-.result-block:first-child { margin-top: 0; }
-.result-block h3 {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--primary-dark);
-  margin: 0 0 16px;
+.strip-card:first-child { margin-top: 0; }
+.strip-head {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
+  padding: 16px 20px;
+  background: linear-gradient(90deg, rgba(220,61,61,0.07), rgba(220,61,61,0.015) 60%);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
 }
-.result-block h3 .rb-index {
-  background: var(--primary);
-  color: white;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
+.strip-head.ok {
+  background: linear-gradient(90deg, rgba(22,163,74,0.08), rgba(22,163,74,0.015) 60%);
+}
+.strip-idx {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--danger);
   flex-shrink: 0;
+  width: 26px;
+  font-family: var(--mono, inherit);
 }
-.result-block .btn-row { margin-top: 12px; }
+.strip-head.ok .strip-idx { color: var(--success); }
+.strip-files {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+  min-width: 200px;
+}
+.strip-files .sep { color: var(--text-muted); font-weight: 400; margin: 0 6px; }
+.strip-status {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.strip-status svg { width: 14px; height: 14px; flex-shrink: 0; }
+.strip-head.ok .strip-status { color: var(--success); }
+.strip-divider { width: 1px; height: 26px; background: var(--border); flex-shrink: 0; }
+.strip-stats { display: flex; gap: 18px; flex-shrink: 0; }
+.strip-stat { text-align: right; }
+.strip-stat .l { font-size: 10.5px; color: var(--text-muted); margin-bottom: 2px; }
+.strip-stat .v { font-size: 13.5px; font-weight: 700; color: var(--text); }
+.strip-card .btn-row { margin: 12px 20px 20px; }
+.strip-card .pairing-warning,
+.strip-card .note-box { margin-left: 20px; margin-right: 20px; }
+.strip-card .note-box:last-child { margin-bottom: 20px; }
+.strip-card .table-wrap { border: none; border-radius: 0; max-height: none; }
 
 table.overview {
   border-collapse: collapse;
@@ -419,51 +405,7 @@ table.overview td.overview-error-msg { text-align: left; white-space: normal; }
 table.overview td.status-ok { color: var(--success); font-weight: 700; }
 table.overview td.status-bad { color: var(--danger); font-weight: 700; }
 
-/* ===== 버튼 ===== */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: background .15s, opacity .15s;
-}
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: var(--primary-dark); }
-.btn-primary:disabled { background: #A9C4DC; cursor: not-allowed; }
-
-/* 검증 실행 버튼만 별도 강조: 그라데이션 + 호버 마이크로 인터랙션 */
-#runBtn {
-  background: linear-gradient(135deg, var(--primary) 0%, #7B4FE0 100%);
-  background-size: 160% 160%;
-  background-position: 0% 50%;
-  border: none;
-  box-shadow: 0 4px 14px rgba(91, 70, 180, 0.32);
-  transition: background-position .35s ease, transform .18s ease, box-shadow .18s ease;
-}
-#runBtn:hover:not(:disabled) {
-  background-position: 100% 50%;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(91, 70, 180, 0.45);
-}
-#runBtn:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 3px 10px rgba(91, 70, 180, 0.32);
-}
-#runBtn:disabled {
-  background: #A9C4DC;
-  box-shadow: none;
-}
-.btn-outline {
-  background: white;
-  color: var(--primary);
-  border: 1px solid var(--primary);
-}
-.btn-outline:hover { background: var(--secondary); }
+/* ===== 버튼은 공용 shared/style.css의 .btn / .btn-outline / .btn-action을 그대로 사용 ===== */
 .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
 
 /* ===== 에러 카드 ===== */
@@ -478,23 +420,7 @@ table.overview td.status-bad { color: var(--danger); font-weight: 700; }
   white-space: pre-wrap;
 }
 
-/* ===== 요약 카드 ===== */
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 20px;
-}
-.summary-box {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px 18px;
-}
-.summary-box .label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
-.summary-box .value { font-size: 20px; font-weight: 700; }
-.summary-box.ok .value { color: var(--success); }
-.summary-box.bad .value { color: var(--danger); }
+/* ===== 요약 카드는 strip-head 안의 .strip-stats로 대체됨 ===== */
 
 /* ===== 결과 테이블 ===== */
 .table-wrap {
@@ -552,53 +478,55 @@ table.result td.diff-cell.mismatch {
 .group-ez { background: #FFFBEF; }
 .group-diff { background: #F1F8F2; }
 
-.unclassified-note {
+/* ===== 표 아래 안내 박스 (미분류 세목 안내 / 원본 대조 / 짝짓기 경고) — 라이트 글래스 + 아이콘 배지로 통일 ===== */
+.note-box {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
   margin-top: 12px;
+  padding: 13px 16px;
+  border-radius: 10px;
   font-size: 12.5px;
+  line-height: 1.6;
   color: var(--text-muted);
 }
-.unclassified-note b { color: var(--text); }
+.note-box b { color: var(--text); }
+.note-box .n-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: #fff;
+  margin-top: 1px;
+}
+.note-box .n-icon svg { width: 13px; height: 13px; }
 
-/* RCMS 등 원본 파일 자체 잔액과 재계산 잔액을 대조하는 안내 - 미분류 안내와는
-   다른 색(정보성 파랑)으로 구분해서, "분류 문제"와 "계산식 차이"를 혼동하지 않게 한다. */
-.balance-check-note {
-  margin-top: 12px;
-  padding: 10px 14px;
-  background: var(--secondary);
-  border-left: 3px solid var(--primary);
-  border-radius: 6px;
-  font-size: 12.5px;
-  color: var(--text);
-}
-.balance-check-note b { color: var(--primary-dark); }
-.balance-check-note.mismatch {
-  background: #FFF4E5;
-  border-left-color: #B8860B;
-}
-.balance-check-note.mismatch b { color: #8A5A00; }
+.note-box.info { background: #F0F5FF; }
+.note-box.info b { color: var(--text); }
 
-/* 짝짓기가 잘못됐을 수도 있다는 휴리스틱 경고 - 미분류(파랑)/잔액(주황)과 겹치지 않게 보라 계열로 구분 */
-.pairing-warning {
-  margin-bottom: 14px;
-  padding: 10px 14px;
-  background: #F5F0FF;
-  border-left: 3px solid #7C3AED;
-  border-radius: 6px;
-  font-size: 12.5px;
-  color: var(--text);
-}
-.pairing-warning b { color: #5B21B6; }
-.pairing-flag {
-  font-weight: 700;
-  color: #5B21B6;
-}
+.note-box.check { background: #F0F5FF; }
+.note-box.check b { color: var(--primary-dark); }
+.note-box.check.mismatch { background: #FFF4E5; }
+.note-box.check.mismatch .n-icon { background: #B8860B; }
+.note-box.check.mismatch b { color: #8A5A00; }
+
+.note-box.warn { background: #F5F0FF; margin-bottom: 14px; }
+.note-box.warn .n-icon { background: #7C3AED; }
+.note-box.warn b { color: #5B21B6; }
+.pairing-flag { font-weight: 700; color: #5B21B6; font-size: 11.5px; }
 
 footer.app-footer {
   margin-top: 40px;
 }
 
 @media (max-width: 720px) {
-  .summary-grid { grid-template-columns: 1fr; }
+  .strip-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .strip-divider { display: none; }
+  .strip-stats { width: 100%; justify-content: space-between; }
 }
 
 /* ===== 확인/경고 모달 (native alert 대체) ===== */

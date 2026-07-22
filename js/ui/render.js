@@ -5,13 +5,7 @@
 // (단, 사용자가 X 버튼을 누르면 main.js의 removeFile/removePair를 호출한다.)
 // ============================================================
 
-function setStep(activeIndex) {
-  document.querySelectorAll(".step").forEach((el, i) => {
-    el.classList.remove("active", "done");
-    if (i < activeIndex) el.classList.add("done");
-    if (i === activeIndex) el.classList.add("active");
-  });
-}
+// 스텝 표시는 공용 AppCore.stepper.set()을 사용 (shared/app-core.js)
 
 function badgeInfo(type) {
   if (type === "PMS") return { text: "PMS(내부망)", cls: "badge-pms" };
@@ -49,6 +43,7 @@ function renderChips() {
 function updateRunState() {
   const hint = $("#uploadHint");
   const btn = $("#runBtn");
+  const btnLabel = btn.querySelector(".btn-label");
   const pairSelect = $("#pairSelect");
   const pairListEl = $("#pairList");
   const pmsFiles = AppState.state.files.filter((f) => f.type === "PMS");
@@ -58,9 +53,9 @@ function updateRunState() {
     hint.textContent = "";
     pairSelect.style.display = "none";
     pairListEl.style.display = "none";
-    btn.textContent = "🪄검증 실행";
+    btnLabel.textContent = "검증 실행";
     btn.disabled = true;
-    setStep(0);
+    AppCore.stepper.set(1);
     return;
   }
 
@@ -68,9 +63,9 @@ function updateRunState() {
     hint.textContent = "";
     pairSelect.style.display = "none";
     pairListEl.style.display = "none";
-    btn.textContent = "🪄검증 실행";
+    btnLabel.textContent = "검증 실행";
     btn.disabled = false;
-    setStep(1);
+    AppCore.stepper.set(2);
     return;
   }
 
@@ -79,18 +74,18 @@ function updateRunState() {
     pairSelect.style.display = "flex";
     pairListEl.style.display = AppState.state.pairs.length ? "flex" : "none";
     populatePairSelect(pmsFiles, ezFiles);
-    btn.textContent = AppState.state.pairs.length ? `🪄여러 과제 검증 실행 (${AppState.state.pairs.length}개)` : "🪄여러 과제 검증 실행";
+    btnLabel.textContent = AppState.state.pairs.length ? `여러 과제 검증 실행 (${AppState.state.pairs.length}개)` : "여러 과제 검증 실행";
     btn.disabled = AppState.state.pairs.length === 0;
-    setStep(1);
+    AppCore.stepper.set(2);
     return;
   }
 
   hint.textContent = "PMS(ETRIware)·외부시스템(이지바로/RCMS) 파일이 각각 1개 이상 필요합니다.";
   pairSelect.style.display = "none";
   pairListEl.style.display = "none";
-  btn.textContent = "🪄검증 실행";
+  btnLabel.textContent = "검증 실행";
   btn.disabled = true;
-  setStep(0);
+  AppCore.stepper.set(1);
 }
 
 function populatePairSelect(pmsFiles, ezFiles) {
@@ -213,13 +208,28 @@ function buildResultTableHtml(result, tableId) {
   `;
 }
 
+const NOTE_ICONS = {
+  info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  alert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  check: '<polyline points="20 6 9 17 4 12"/>'
+};
+function iconSvg(name){
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${NOTE_ICONS[name]}</svg>`;
+}
+
 function buildResultBlockHtml(item, index) {
   const tableId = `resultTable_${index}`;
-  const titleHtml = `<h3><span class="rb-index">${index + 1}</span>${escapeHtml(item.label)}</h3>`;
+  const idxLabel = String(index + 1).padStart(2, "0");
+  const filesHtml = escapeHtml(item.label).replace(/ ↔ /g, ' <span class="sep">↔</span> ');
+
   if (!item.result.ok) {
     return `
-      <div class="result-block">
-        ${titleHtml}
+      <div class="strip-card">
+        <div class="strip-head">
+          <span class="strip-idx">${idxLabel}</span>
+          <span class="strip-files">${filesHtml}</span>
+        </div>
         <div class="error-card">${escapeHtml(item.result.error)}</div>
       </div>
     `;
@@ -231,24 +241,26 @@ function buildResultBlockHtml(item, index) {
   const ezLabels = result.unclassifiedLabels.ez;
   let noteHtml = "";
   if (pmsLabels.length || ezLabels.length) {
-    noteHtml = `<div class="unclassified-note">
-      <b>ℹ️ 미분류 세목 안내</b> — 아래 항목은 현재 비목 분류표에 없어 "기타(미분류)" 행으로 집계되었습니다.
+    noteHtml = `<div class="note-box info">
+      <span class="n-icon">${iconSvg("info")}</span>
+      <div><b>미분류 세목 안내</b> — 아래 항목은 현재 비목 분류표에 없어 "기타(미분류)" 행으로 집계되었습니다.
       비목 체계가 바뀌어 새로 생긴 항목일 수 있으니 확인해주세요.<br>
       ${pmsLabels.length ? `PMS: ${pmsLabels.map(escapeHtml).join(", ")}<br>` : ""}
-      ${ezLabels.length ? `${escapeHtml(result.externalLabel)}: ${ezLabels.map(escapeHtml).join(", ")}` : ""}
+      ${ezLabels.length ? `${escapeHtml(result.externalLabel)}: ${ezLabels.map(escapeHtml).join(", ")}` : ""}</div>
     </div>`;
   }
 
   let balanceCheckHtml = "";
   if (result.externalBalanceCheck) {
     const bc = result.externalBalanceCheck;
-    const cls = bc.mismatch ? "balance-check-note mismatch" : "balance-check-note";
+    const cls = bc.mismatch ? "note-box check mismatch" : "note-box check";
     balanceCheckHtml = `<div class="${cls}">
-      <b>🔎 ${result.externalLabel} 잔액 원본 대조</b> — 저희가 재계산한 잔액(이월+실행−실적)과
+      <span class="n-icon">${iconSvg("search")}</span>
+      <div><b>${result.externalLabel} 잔액 원본 대조</b> — 저희가 재계산한 잔액(이월+실행−실적)과
       ${result.externalLabel} 파일에 원래 적혀있는 "사용잔액"을 비교했습니다.<br>
       원본: ${fmt(bc.reported)}원 · 재계산: ${fmt(bc.recalculated)}원 ·
       차이: <b>${fmt(bc.diff)}원</b>
-      ${bc.mismatch ? " — 차이가 있어요. 이월금(계속비 외 별도) 반영 방식 등을 확인해보세요." : " — 일치합니다."}
+      ${bc.mismatch ? " — 차이가 있어요. 이월금(계속비 외 별도) 반영 방식 등을 확인해보세요." : " — 일치합니다."}</div>
     </div>`;
   }
 
@@ -258,29 +270,25 @@ function buildResultBlockHtml(item, index) {
     const reason = result.pairingNoOverlap
       ? "겹치는 비목이 하나도 없어요."
       : `실행예산 합계가 약 ${pct}% 차이나요.`;
-    pairingWarningHtml = `<div class="pairing-warning">
-      <b>⚠ 다른 과제 파일 아닐까요?</b> ${reason} 짝을 다시 확인해보세요.
+    pairingWarningHtml = `<div class="note-box warn">
+      <span class="n-icon">${iconSvg("alert")}</span>
+      <div><b>다른 과제 파일 아닐까요?</b> ${reason} 짝을 다시 확인해보세요.</div>
     </div>`;
   }
 
   return `
-    <div class="result-block">
-      ${titleHtml}
-      ${pairingWarningHtml}
-      <div class="summary-grid">
-        <div class="summary-box ${mismatch ? "bad" : "ok"}">
-          <div class="label">검증 결과</div>
-          <div class="value">${mismatch ? "⚠ 불일치 항목 있음" : "✔ 완전 일치"}</div>
-        </div>
-        <div class="summary-box">
-          <div class="label">PMS 총계 (실행예산)</div>
-          <div class="value">${fmt(result.total.pms.exec)}원</div>
-        </div>
-        <div class="summary-box">
-          <div class="label">${result.externalLabel} 총계 (실행예산)</div>
-          <div class="value">${fmt(result.total.ez.exec)}원</div>
+    <div class="strip-card">
+      <div class="strip-head${mismatch ? "" : " ok"}">
+        <span class="strip-idx">${idxLabel}</span>
+        <span class="strip-files">${filesHtml}</span>
+        <span class="strip-status">${iconSvg(mismatch ? "alert" : "check")}${mismatch ? "불일치 항목 있음" : "완전 일치"}</span>
+        <span class="strip-divider"></span>
+        <div class="strip-stats">
+          <div class="strip-stat"><div class="l">PMS 총계</div><div class="v">${fmt(result.total.pms.exec)}원</div></div>
+          <div class="strip-stat"><div class="l">${escapeHtml(result.externalLabel)} 총계</div><div class="v">${fmt(result.total.ez.exec)}원</div></div>
         </div>
       </div>
+      ${pairingWarningHtml}
       <div class="table-wrap">${buildResultTableHtml(result, tableId)}</div>
       ${noteHtml}
       ${balanceCheckHtml}
@@ -326,7 +334,7 @@ function renderResults(items) {
   $("#errorArea").innerHTML = "";
   AppState.state.resultShown = true;
   AppState.state.lastItems = items; // 엑셀 내보내기는 DOM이 아니라 이 원본 데이터로 만든다
-  setStep(2);
+  AppCore.stepper.set(3);
 
   $("#overviewArea").innerHTML = buildOverviewHtml(items);
   $("#resultsContainer").innerHTML = items.map((item, i) => buildResultBlockHtml(item, i)).join("");
@@ -336,19 +344,7 @@ function renderResults(items) {
   $("#resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function showToast(msg) {
-  let toast = $("#toast");
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "toast";
-    toast.style.cssText = "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1F2937;color:white;padding:10px 20px;border-radius:8px;font-size:14px;z-index:999;opacity:0;transition:opacity .2s;";
-    document.body.appendChild(toast);
-  }
-  toast.textContent = msg;
-  toast.style.opacity = "1";
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => { toast.style.opacity = "0"; }, 2200);
-}
+// 토스트는 공용 AppCore.toast.show()를 사용 (shared/app-core.js)
 
 // 확인 버튼 하나만 있는 경고 모달 (native alert() 대체).
 // 짝짓기 중복 선택처럼, 사용자가 반드시 인지해야 하는 경고에 사용한다.

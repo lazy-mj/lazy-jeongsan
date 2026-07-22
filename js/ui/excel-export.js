@@ -62,6 +62,6 @@ function downloadAllExcel() {
   }
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
   XLSX.writeFile(wb, `예산검증결과_${today}.xlsx`);
-  showToast("✔ 다운로드 완료");
+  AppCore.toast.show("다운로드 완료", "success");
 }
 
