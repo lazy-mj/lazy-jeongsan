@@ -268,8 +268,8 @@ function buildResultBlockHtml(item, index) {
   if (result.looksLikeBasicProject) {
     basicProjectWarningHtml = `<div class="note-box warn basic-project">
       <span class="n-icon">${iconSvg("alert")}</span>
-      <div><b>기본사업 예산으로 보여요</b> — 이 도구는 현재 <b>협약사업</b>만 지원합니다.
-      기본사업 전용 세목(연구실안전관리비/연구보안관리비 등)이 감지되었어요. 결과가 정확하지 않을 수 있습니다.</div>
+      <div><b>기본사업 예산으로 보여요</b> — 이 도구는 현재 이지바로/RCMS 적용 정부수탁 사업만 지원합니다.
+      기본사업 파일은 결과가 정확하지 않을 수 있습니다.</div>
     </div>`;
   }
 
