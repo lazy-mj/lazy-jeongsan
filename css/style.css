@@ -131,6 +131,13 @@ body {
 .tool-hero .lock-note.guide-badge:hover{background:rgba(255,255,255,0.55);}
 .tool-hero .lock-note.guide-badge:focus-visible{outline:2px solid #8B5CF6; outline-offset:2px;}
 
+/* 지원 범위 안내 (협약사업만 지원, 기본사업 미지원) */
+.scope-note{
+  display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-muted);
+  margin:8px 0 18px; padding:8px 12px; background:#F7F9FC; border:1px solid var(--border); border-radius:8px;
+}
+.scope-note .icon-svg{color:#9AA6B2; flex-shrink:0;}
+
 /* ===== 카드는 공용 shared/style.css의 .card / .card-head / .step-badge / .desc를 그대로 사용 ===== */
 
 /* ===== 드롭존 (단일, 여러 파일 한번에) ===== */
@@ -490,6 +497,9 @@ table.result td.diff-cell.mismatch {
 .note-box.warn { background: #F5F0FF; margin-bottom: 14px; }
 .note-box.warn .n-icon { background: #7C3AED; }
 .note-box.warn b { color: #5B21B6; }
+.note-box.warn.basic-project { background: var(--danger-bg, #FDECEC); }
+.note-box.warn.basic-project .n-icon { background: var(--danger, #D32F2F); }
+.note-box.warn.basic-project b { color: var(--danger, #D32F2F); }
 .pairing-flag { font-weight: 700; color: #5B21B6; font-size: 11.5px; }
 
 footer.app-footer {

@@ -264,6 +264,15 @@ function buildResultBlockHtml(item, index) {
     </div>`;
   }
 
+  let basicProjectWarningHtml = "";
+  if (result.looksLikeBasicProject) {
+    basicProjectWarningHtml = `<div class="note-box warn basic-project">
+      <span class="n-icon">${iconSvg("alert")}</span>
+      <div><b>기본사업 예산으로 보여요</b> — 이 도구는 현재 <b>협약사업</b>만 지원합니다.
+      기본사업 전용 세목(연구실안전관리비/연구보안관리비 등)이 감지되었어요. 결과가 정확하지 않을 수 있습니다.</div>
+    </div>`;
+  }
+
   let pairingWarningHtml = "";
   if (result.pairingSuspicious) {
     const pct = Math.round(result.pairingDiffRatio * 100);
@@ -288,6 +297,7 @@ function buildResultBlockHtml(item, index) {
           <div class="strip-stat"><div class="l">${escapeHtml(result.externalLabel)} 총계</div><div class="v">${fmt(result.total.ez.exec)}원</div></div>
         </div>
       </div>
+      ${basicProjectWarningHtml}
       ${pairingWarningHtml}
       <div class="table-wrap">${buildResultTableHtml(result, tableId)}</div>
       ${noteHtml}

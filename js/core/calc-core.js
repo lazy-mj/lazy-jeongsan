@@ -126,6 +126,7 @@ window.CalcCore = (() => {
       pairingSuspicious: pairingCheck.suspicious,
       pairingDiffRatio: pairingCheck.diffRatio,
       pairingNoOverlap: pairingCheck.noOverlap,
+      looksLikeBasicProject: !!pmsAgg.looksLikeBasicProject,
       meta: {
         pmsHeaderRow: pmsLoc.headerRow, pmsDataStartRow: pmsLoc.dataStartRow, pmsLastRow: pmsAgg.lastRow,
         extHeaderRow: extLoc.headerRow, extDataStartRow: extLoc.dataStartRow, extLastRow: extAgg.lastRow,

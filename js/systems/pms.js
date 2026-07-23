@@ -6,7 +6,7 @@
 
 (() => {
   const { cellText, parseAmount, findHeaderRow, findColumnInRow, lastRowByColumn } = window.GridUtils;
-  const { PMS_CATEGORY_MAP, UNCLASSIFIED, classifyBy, emptySums } = window.CategoryMap;
+  const { PMS_CATEGORY_MAP, UNCLASSIFIED, BASIC_PROJECT_SIGNATURE, classifyBy, emptySums } = window.CategoryMap;
 
   function classifyPMS(semok) {
     return classifyBy(PMS_CATEGORY_MAP, semok, false);
@@ -51,7 +51,8 @@
       sums[cat].exec += parseAmount(cellText(grid, r, loc.cols.exec));
       sums[cat].actual += parseAmount(cellText(grid, r, loc.cols.actual));
     }
-    return { sums, lastRow, unclassifiedLabels: [...unclassifiedLabels] };
+    const looksLikeBasicProject = [...unclassifiedLabels].some((label) => BASIC_PROJECT_SIGNATURE.has(label));
+    return { sums, lastRow, unclassifiedLabels: [...unclassifiedLabels], looksLikeBasicProject };
   }
 
   window.SystemRegistry.register("PMS", {

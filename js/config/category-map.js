@@ -77,6 +77,15 @@ window.CategoryMap = (() => {
 
   const UNCLASSIFIED = "__UNCLASSIFIED__";
 
+  // 기본사업(protocol 사업이 아닌 내부 기본사업) 예산에서만 등장하는 세세세목들.
+  // 이 도구는 현재 협약사업만 지원하므로, 아래 라벨이 미분류로 잡히면
+  // "이 파일은 기본사업일 가능성이 높다"는 신호로 사용한다.
+  // (2026-07, 실제 기본사업 PMS 파일 샘플로 확인)
+  const BASIC_PROJECT_SIGNATURE = new Set([
+    "연구실 안전관리비", "연구보안관리비", "연구윤리활동비", "기본사업 관리비",
+    "지식재산권 출원 등록비", "과학문화활동비"
+  ]);
+
   // 시트 자체에 이미 존재하는 "소계/합계" 행 - 이미 집계된 값의 재표시일 뿐이므로
   // 미분류로 잡으면 중복 합산이 된다. 항상 건너뛴다 (원본 VBA도 암묵적으로 스킵됨).
   const STRUCTURAL_SKIP_LABELS = new Set(["소계", "합계", "총계"]);
@@ -102,6 +111,7 @@ window.CategoryMap = (() => {
   return {
     STANDARD_CATEGORIES,
     UNCLASSIFIED,
+    BASIC_PROJECT_SIGNATURE,
     PMS_CATEGORY_MAP,
     EZBARO_CATEGORY_MAP,
     RCMS_CATEGORY_MAP,
