@@ -538,3 +538,8 @@ select:focus-visible,
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
+
+/* 사용법 창: 넓게 + 길어도 화면 안에서 스크롤 (다른 확인 창은 그대로) — lazy-timecard와 같은 규칙 */
+.modal-overlay .modal-box:has(.usage-subhead) { max-width: 640px; max-height: calc(100vh - 48px); overflow-y: auto; text-align: left; }
+.modal-box:has(.usage-subhead) .modal-title { text-align: center; }
+.modal-box:has(.usage-subhead) .modal-actions { position: sticky; bottom: -26px; background: var(--card); padding: 12px 0 4px; margin-bottom: -4px; }
