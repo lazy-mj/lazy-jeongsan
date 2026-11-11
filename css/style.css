@@ -543,3 +543,10 @@ select:focus-visible,
 .modal-overlay .modal-box:has(.usage-subhead) { max-width: 640px; max-height: calc(100vh - 48px); overflow-y: auto; text-align: left; }
 .modal-box:has(.usage-subhead) .modal-title { text-align: center; }
 .modal-box:has(.usage-subhead) .modal-actions { position: sticky; bottom: -26px; background: var(--card); padding: 12px 0 4px; margin-bottom: -4px; }
+
+/* 업로드 상자 아래: 어디서 다운로드하나요? (항상 보임) — lazy-timecard와 같은 모양 */
+.where-box { margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: #F7F9FC; border: 1px solid var(--border); font-size: 12.5px; color: #4B5563; line-height: 1.55; white-space: normal; display: flex; flex-direction: column; gap: 6px; }
+.where-box .wb-title { font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.where-box .wb-row { display: grid; grid-template-columns: 104px 1fr; gap: 10px; align-items: start; }
+.where-box .wb-row .dz-badge { justify-self: start; white-space: nowrap; }
+@media (max-width: 640px) { .where-box .wb-row { grid-template-columns: 1fr; gap: 4px; } }
